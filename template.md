@@ -76,7 +76,27 @@ The Position Independent Execution (PIE) option should be kept as it enables ASL
 
 For the program presented, it is not necessary to make the stack executable. Furthermore, including the flag `-z noexecstack` is a great decision as it does not affect the intended functioning of the program and it protects it from malicious code injections.
 
-# Future considerations
+### Problematic lines in the code
+The problematic lines in the code are primarily those that declare the buffer with a size of 20, even though we only expect single-character inputs like 'Y' or 'n'.
+
+Another issue is the use of scanf without proper bounds checking, which can lead to buffer overflow vulnerabilities. Additionally, the visibility of the fnR function could be problematic, as it might not be properly scoped or declared where needed.
+
+Lastly, another issue is the handling of the first user input without any type checking, which can result in incorrect behavior if the input is not as expected.
+
+### The patched vulnerabilities
+
+First of all, we added the necessary flags to the Makefile.
+
+Regarding the buffer size, we decided to set it to 3 instead of 20, as only a single character (such as 'Y' or 'n') is required. While we could have dynamically allocated the buffer, it is unnecessary since the input size will remain fixed.
+
+For bounds checking, we switched from scanf() to using fgets(), which automatically limits input based on the buffer size. This ensures that the user cannot overwrite the buffer, preventing potential buffer overflows.
+
+To address the visibility of the fnR function when using debugging tools, we added the #ifndef DEBUG_MODE directive
+that is used as part of conditional compilation. It checks whether a specific macro (in this case, DEBUG_MODE) has not been defined before compiling the code that follows it. If DEBUG_MODE is not defined, the code between #ifndef DEBUG_MODE and #endif will be included in the compilation process. If DEBUG_MODE is defined, that code is excluded. This prevents access to the function when debugging is enabled.
+
+Lastly, for handling the first input, we implemented a function that checks the type of the input and ensures only numeric values are accepted.
+
+### Future considerations
 
 The door locker program is a system that should be implemented with security aspects in mind as it allows or restricts access. It was mentioned in the previous laboratory that the password is weak, and it can be deciphered from the decompiled or the source code. The first consideration for future implementations would be to have a more complicated or hidden password. This can be achieved by encrypting it in a separate file that is loaded in the `main()` function. However, that was not the focus of this project, rather it was oriented towards the functionality, exploitability and manipulation of the program.
 
@@ -99,84 +119,7 @@ Another important improvement was input validation. Replacing insecure functions
 Future development should focus on encrypting sensitive information, improving authentication and authorization mechanisms, and including runtime security checks such as `-fsanitize=bounds`. Keeping libraries and dependencies up to date with regular testing is also necessary for the security of the program. To conclude, by following these best practices, the door locker program can become a more secure application that will prevent traditional exploitations.
 
 
-<!-- You should skip a line before and after a bullet point. You can use whatever symbole you want, "-", "*" ... -->
-Bullet point list:
 
-- Item 0
-- Item 1
-- Item 2
-
-<!-- Nesting lists depend on tabulation. Number are not important, only the first one determine where the list begin. However, it is good practice to use the actual numbewr -->
-Numbered and nested list:
-
-- from 0:
-
-    0. Item 0
-    1. Item 1
-    2. Item 2
-
-- from 1 (remarkable how the numbers are in fact ignored):
-
-    1. Item 0
-    1. Item 1
-    2. Item 2
-
-## Second section
-
-### Code blocks
-
-<!-- Never use screenshots, use code blocks ! They are more legible, syntaxically colored, and more portable. Again, skip lines before and after a block. -->
-Let's show some C++ code:
-
-```C++
-class A {
-private:
-    int _a;
-public:
-    int a() const {return a;}
-}
-```
-
-Or some python:
-
-```python
-class A:
-    def __init__(self):
-        self.__a = int(0)
-    
-    def a(self):
-        return self.__a
-```
-
-Or even, let's inline some C code: `int inlined_C_code() {}`{.C}.
-<!--  Warning: the inline code language specification (the `{.C}`) is a Pandoc extension. -->
-
-### Links
-
-<!-- if you don't know what an URL is, lookup "uniform resource locator (URL)" on Wikipedia -->
-Markdown is like slimmer HTML, so [URL works](https://www.markdownguide.org/basic-syntax/).
-
-### Images
-
-Markdown use links, so you can link local files, but also print images like so (again, width specification is a Pandoc extension):
-
-<!-- The link here is a relative path, so the file must exists somewhere --> 
-![The research centre Christian Huygens](figures/cr_huygens.jpg){ width=60% }
-
-<!-- You can safely delete the whole part up to the endi. It is just to demonstrate that Markdown can be used for HTML as well. --> 
-```{=latex}
-\begin{comment}
-t makes no sense to reade the web in a PDF or in \LaTeX, thus the follwing is impossible.
-Let's ignored that:
-
-\begin{verbatim}
-```
-
-But it can also be on the web:
-
-![UFR SSI as seen on the "univ-ubs.fr" website](https://www-facultesciences.univ-ubs.fr/_richText-file/ametys-internal%253Asites/ssi/ametys-internal%253Acontents/presentation-article/_attribute/content/_data/Photos%20ssi%20Va%20et%20Lo%202_215x251.jpg){external=1}
-
-```{=latex}
 \end{verbatim}
 \end{comment}
 ```
