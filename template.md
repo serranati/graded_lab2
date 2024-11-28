@@ -1,6 +1,5 @@
 ---
 title: The Bad Program
-subtitle: The subtitle
 author: Ikrame Rekabi and Natalia Serra Antonucci
 date: 27 November 2024
 geometry: top=1.5cm,left=2cm,right=2cm,bottom=2cm
@@ -76,14 +75,14 @@ The Position Independent Execution (PIE) option should be kept as it enables ASL
 
 For the program presented, it is not necessary to make the stack executable. Furthermore, including the flag `-z noexecstack` is a great decision as it does not affect the intended functioning of the program and it protects it from malicious code injections.
 
-### Problematic lines in the code
+# Problematic lines in the code
 The problematic lines in the code are primarily those that declare the buffer with a size of 20, even though we only expect single-character inputs like 'Y' or 'n'.
 
 Another issue is the use of scanf without proper bounds checking, which can lead to buffer overflow vulnerabilities. Additionally, the visibility of the 'fnR' function could be problematic, as it might not be properly scoped or declared where needed.
 
 Lastly, another issue is the handling of the first user input without any type checking, which can result in incorrect behavior if the input is not as expected.
 
-### The patched vulnerabilities
+# The patched vulnerabilities
 
 First of all, we added the necessary flags to the Makefile.
 
@@ -95,7 +94,7 @@ To address the visibility of the fnR function when using debugging tools, we add
 
 Lastly, for handling the first input, we implemented a function that checks the type of the input and ensures only numeric values are accepted.
 
-### Future considerations
+# Future considerations
 
 The door locker program is a system that should be implemented with security aspects in mind as it allows or restricts access. It was mentioned in the previous laboratory that the password is weak, and it can be deciphered from the decompiled or the source code. The first consideration for future implementations would be to have a more complicated or hidden password. This can be achieved by encrypting it in a separate file that is loaded in the `main()` function. However, that was not the focus of this project, rather it was oriented towards the functionality, exploitability and manipulation of the program.
 
