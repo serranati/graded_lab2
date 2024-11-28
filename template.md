@@ -76,6 +76,28 @@ The Position Independent Execution (PIE) option should be kept as it enables ASL
 
 For the program presented, it is not necessary to make the stack executable. Furthermore, including the flag `-z noexecstack` is a great decision as it does not affect the intended functioning of the program and it protects it from malicious code injections.
 
+# Future considerations
+
+The door locker program is a system that should be implemented with security aspects in mind as it allows or restricts access. It was mentioned in the previous laboratory that the password is weak, and it can be deciphered from the decompiled or the source code. The first consideration for future implementations would be to have a more complicated or hidden password. This can be achieved by encrypting it in a separate file that is loaded in the `main()` function. However, that was not the focus of this project, rather it was oriented towards the functionality, exploitability and manipulation of the program.
+
+Input sanitization is a must because it can lead to vulnerabilities that can be exploited through buffer overflow attacks (like the presented in these laboratories), or even malicious code injections. User input should always be checked in both format and length. This can be achieved by implementing functions like `fgets()` instead of `scanf()`, where these characteristics can be validated. This extends to functions handling memory, where it is preferable to use functions that also consider memory safety and do not impact performance  (e.g., use `strncpy()` instead of `strcpy`). 
+
+Regarding the `fnR()` function and root privileges, the Least Privilege Principle should also be considered. If the program does not require it, access to executing it with elevated privileges should be restricted, as it can lead to risk escalation. Root privileges should only be granted if necessary for the program's functionality and purpose.
+
+Other compilation options can be considered to be included. The `relro` flag stands for Relocation Read-Only which does not allow to overwrite the locations (memory addresses) of the functions, making these read-only objects. This would disable part of the attack proposed in the previous laboratory where an address is replaced with the memory address of the `fnR()` function to gain root privileges for the execution of the program. Another compilation option is `-fsanitize=bounds` which enables the detection of out-of-bounds array accesses to recognize memory violations at runtime.
+
+Authentification and Authorization are security requirements that are really important for the implementation of such program. The consideration of these requirements would allow more access control over the usage of the program and avoid adverts from tampering with the system. Finally, a great suggestion for tracking accesses to the program is logging. This would include having a response for critical events (e.g., access attempts) and monitoring all accesses to the system to determine suspicious activies.
+
+# Conclusions
+
+The analysis and modifications to the vulnerable door locker program really show that security should not be taken lightly in any access control system. The program initially had critical vulnerabilities such as lack of input sanitization, use of insecure functions, and exposing sensitive functions like `fnR()` to any user. These vulnerabilities made it prone to buffer overflow attacks and privilege escalation, showing the need for secure coding practices and system analysis.
+
+To fix these, legacy compilation and linker options that disabled security features were replaced with their secure opposites. For example, enabling stack protection with `-fstack-protector-strong`, buffer overflow detection with `-D_FORTIFY_SOURCE=2`, and memory address randomization through `-fPIE` and `-pie` greatly hardened the program compared to the initial options. Additional flags like `-z noexecstack` and `relro` were included in the report as measures to prevent code injection and overwriting of function addresses.
+
+Another important improvement was input validation. Replacing insecure functions like `scanf()` with their safer counterparts, such as `fgets()`, ensured that user inputs were well sanitized for format and length to avoid buffer overflows and execution of malicious code. Only allowing numeric values and adjusting the buffer size contributed to the input validation as well. The principle of least privilege was discussed in the restriction of root-level access, ensuring sensitive functions like `fnR()` were secured through conditional compilation or excluded from debugging builds.
+
+Future development should focus on encrypting sensitive information, improving authentication and authorization mechanisms, and including runtime security checks such as `-fsanitize=bounds`. Keeping libraries and dependencies up to date with regular testing is also necessary for the security of the program. To conclude, by following these best practices, the door locker program can become a more secure application that will prevent traditional exploitations.
+
 
 <!-- You should skip a line before and after a bullet point. You can use whatever symbole you want, "-", "*" ... -->
 Bullet point list:
