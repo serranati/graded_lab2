@@ -43,16 +43,39 @@ lang: en-GB
 <!-- Sections are denoted with a "#" at the very beginning of the line. Do not number the sections! Pandoc will handle that part -->
 # Introduction
 
-The threats identified are:
+This project is based on a vulnerable door locker program that was exploited in the previous exercise. This program asks the user to input two parameters that have to be equal to allow access, or, open the door. However, the program had many vulnerabilities that allows many threats to be exploited. The threats identified are:
 
-- Exploitation of the buffer overflow vulnerability due to the lack of input data treatment. Such as the lack of bounds checkingh, and the dynamic allocation of the buffer in the validate function input.
-- The use of securely weak functions such as scanf.
-- The use of hidden functons that grant root access that is not used in the main.
+- Exploitation through buffer overflow due to the lack of input data sanitization. It includes the lack of bounds checking, type checking and fixed allocation of the buffer in the `validate()` function.
+- The use of weak functions regarding security such as `scanf()`.
+- The use of a hidden functon that grants root access even though it is not called in the `main()` (`fnR()`).
+
 <!-- Each new "#" denote a lower section level, "##": subsection; "###": subsubsection; and so on. -->
-## Legacy options
+# Legacy options
 
-The aim of this part of the lab was to find the compilation and linker flags used in the Makefile to create the door-locker program exploited in the previous laboratory. 
-As mentioned in the analysis of the mitigations of the previous lab. The flags that we needed are the ones that disable the D-FORTIFY and the canaries so that we can execute the attack  
+The first part of this part of the laboratory was to find the compilation and linker flags (legacy options) used in the Makefile to create the door-locker program exploited in the previous project. Legacy options in a Makefile for a C program are ways of specifying rules, variables, or options in the building process of the program. The flags chosen where guided from what was mentioned in the analysis of exploitation and mitigation techniques of the previous laboratory. 
+
+The `LEGCFLAGS` defined in the Makefile are options added to the compiler, or the compilation stage. `-m32` was chosen as it defines a 32-bit architecture, which is the type of system aspect that allows us to exploit the program. `-fno-stack-protector` was also added as the program did not have a canary to detect a buffer overflow attempt. `-D_FORTIFY_SOURCE=0` was added as no optimizations for buffer overflow detection seemed to be enabled for the program in the previous laboratory. Lastly, `-fPIE` is enabled as it us a key factor for ASLR, which was also enabled in the previous program and had to be disabled to be able to exploit it.
+
+On the other hand, the `LEGLDFLAGS` are options added to manipulate the linker or linking stage. In this case, `-m32` was also added to fully make the program a 32-bit architecture; if it was only specified in `LEGCFLAGS`, it would throw an error stating that the `.c` files do not match the architecture of the compiler. The second flag was `-pie` to enable the Position Independent Execution previously mentioned, as it is crucial for ASLR.
+
+## Acceptable legacy options
+
+Some flags proposed enabled security conditions on the program, while other ones disabled them. 
+
+### Flags that should be removed or replaced
+
+The architecture of the `.c` files for the program is of 64-bit, which allows for more security optimizations (e.g., kernel patch protection). When the exploitation was tested on a 64-bit architecture, we could not perform the buffer overflow as the memory addresses had unprintable characters that did not permit our exploit. For this reason, the `-m32` flag should be removed. 
+
+`-fstack-protector` is a flag allowing the creation of a canary at compilation to alarm the system when there is an attempt of buffer overflow. It enables stack protection for functions that handle arrays with certain characteristics, like size. In the previous program, the flag used has the opposite effect, disabling this security feature. Therefore, `-fno-stack-protector` should be replaced with `-fstack-protector` or even `-fstack-protector-strong`, which has a more strict nature for protection as it considers all functions handling arrays, no matter the size.
+
+`-D_FORTIFY_SOURCE` should be set to 2 rather than 0, as 0 disables security optimizations that could detect buffer overflow attempts. Setting `-D_FORTIFY_SOURCE=2` allows the compiler to recognize string handling functions that could be vulnerable to exploitations. `-D_FORTIFY_SOURCE=3` can also be used as it makes a more thorough analysis of the use of string functions but it has a bigger impact on performance.
+
+### Flags that should be kept or added
+
+The Position Independent Execution (PIE) option should be kept as it enables ASLR. This is a crucial security function that randomizes memory addresses of the functions of the program (ASLR) and the program itself (PIE). This aspect restricts the replacement of memory addresses by maliciously constructed functions or pointing to functions that allow some elevation of privilege, or that represent any other threat to the system.
+
+For the program presented, it is not necessary to make the stack executable. Furthermore, including the flag `-z noexecstack` is a great decision as it does not affect the intended functioning of the program and it protects it from malicious code injections.
+
 
 <!-- You should skip a line before and after a bullet point. You can use whatever symbole you want, "-", "*" ... -->
 Bullet point list:
