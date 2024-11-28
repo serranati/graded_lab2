@@ -79,7 +79,7 @@ For the program presented, it is not necessary to make the stack executable. Fur
 ### Problematic lines in the code
 The problematic lines in the code are primarily those that declare the buffer with a size of 20, even though we only expect single-character inputs like 'Y' or 'n'.
 
-Another issue is the use of scanf without proper bounds checking, which can lead to buffer overflow vulnerabilities. Additionally, the visibility of the fnR function could be problematic, as it might not be properly scoped or declared where needed.
+Another issue is the use of scanf without proper bounds checking, which can lead to buffer overflow vulnerabilities. Additionally, the visibility of the 'fnR' function could be problematic, as it might not be properly scoped or declared where needed.
 
 Lastly, another issue is the handling of the first user input without any type checking, which can result in incorrect behavior if the input is not as expected.
 
@@ -89,10 +89,9 @@ First of all, we added the necessary flags to the Makefile.
 
 Regarding the buffer size, we decided to set it to 3 instead of 20, as only a single character (such as 'Y' or 'n') is required. While we could have dynamically allocated the buffer, it is unnecessary since the input size will remain fixed.
 
-For bounds checking, we switched from scanf() to using fgets(), which automatically limits input based on the buffer size. This ensures that the user cannot overwrite the buffer, preventing potential buffer overflows.
+For bounds checking, we switched from 'scanf()' to using 'fgets()', which automatically limits input based on the buffer size. This ensures that the user cannot overwrite the buffer, preventing potential buffer overflows.
 
-To address the visibility of the fnR function when using debugging tools, we added the #ifndef DEBUG_MODE directive
-that is used as part of conditional compilation. It checks whether a specific macro (in this case, DEBUG_MODE) has not been defined before compiling the code that follows it. If DEBUG_MODE is not defined, the code between #ifndef DEBUG_MODE and #endif will be included in the compilation process. If DEBUG_MODE is defined, that code is excluded. This prevents access to the function when debugging is enabled.
+To address the visibility of the fnR function when using debugging tools, we added the '#ifndef DEBUG_MODE' directive, that is used as part of conditional compilation. It checks whether a specific macro (in this case, DEBUG_MODE) has not been defined before compiling the code that follows it. If 'DEBUG_MODE' is not defined, the code between '#ifndef DEBUG_MODE' and '#endif' will be included in the compilation process. If 'DEBUG_MODE' is defined, that code is excluded. This prevents access to the function when debugging is enabled.
 
 Lastly, for handling the first input, we implemented a function that checks the type of the input and ensures only numeric values are accepted.
 
@@ -120,6 +119,4 @@ Future development should focus on encrypting sensitive information, improving a
 
 
 
-\end{verbatim}
-\end{comment}
 ```
