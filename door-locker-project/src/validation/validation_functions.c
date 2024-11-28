@@ -16,8 +16,13 @@ int fnchck(int a, int b) {
 }
 
 int validate(char * argv[]) {
-    char buffer[20];
+    char buffer[3];
     printf("You entered %s and %s. \nDo you agree ? (Y,n):\n", argv[1], argv[2]);
-    scanf("%s", buffer);
+    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+        // fgets ensures no overflow and includes the null terminator
+        printf("You entered: %s", buffer);
+    } else {
+        printf("Error reading input.\n");
+    }
     return strcmp(buffer, "Y") && strcmp(buffer, "y");
 }
