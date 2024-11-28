@@ -14,10 +14,11 @@ void fngrt(void) {
     return;
 }
 
+#ifndef DEBUG_MODE
 void fnR(void) {
     puts("Opened.");
     puts("Be careful, you are ROOT !\n");
     int value = system("/usr/bin/env PS1=\"SUPPOSED ROOT SHELL > \" python3 -c 'import pty; pty.spawn([\"/bin/bash\", \"--norc\"])'");
     exit(value);
 }
-
+#endif
