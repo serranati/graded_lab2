@@ -89,9 +89,9 @@ First of all, we added the necessary flags to the Makefile.
 
 Regarding the buffer size, we decided to set it to 3 instead of 20, as only a single character (such as 'Y' or 'n') is required. While we could have dynamically allocated the buffer, it is unnecessary since the input size will remain fixed.
 
-For bounds checking, we switched from 'scanf()' to using 'fgets()', which automatically limits input based on the buffer size. This ensures that the user cannot overwrite the buffer, preventing potential buffer overflows.
+For bounds checking, we switched from `scanf()` to using `fgets()`, which automatically limits input based on the buffer size. This ensures that the user cannot overwrite the buffer, preventing potential buffer overflows.
 
-To address the visibility of the fnR function when using debugging tools, we added the '#ifndef DEBUG_MODE' directive, that is used as part of conditional compilation. It checks whether a specific macro (in this case, DEBUG_MODE) has not been defined before compiling the code that follows it. If 'DEBUG_MODE' is not defined, the code between '#ifndef DEBUG_MODE' and '#endif' will be included in the compilation process. If 'DEBUG_MODE' is defined, that code is excluded. This prevents access to the function when debugging is enabled.
+To address the visibility of the fnR function when using debugging tools, we added the '#ifndef DEBUG_MODE' directive, that is used as part of conditional compilation. It checks whether a specific macro (in this case, DEBUG_MODE) has not been defined before compiling the code that follows it. If `DEBUG_MODE` is not defined, the code between `#ifndef DEBUG_MODE` and `#endif` will be included in the compilation process. If `DEBUG_MODE` is defined, that code is excluded. This prevents access to the function when debugging is enabled.
 
 Lastly, for handling the first input, we implemented a function that checks the type of the input and ensures only numeric values are accepted.
 
