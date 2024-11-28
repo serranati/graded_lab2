@@ -51,7 +51,8 @@ The threats identified are:
 <!-- Each new "#" denote a lower section level, "##": subsection; "###": subsubsection; and so on. -->
 ## Legacy options
 
-The aim of this project was to find the compilation and linker flags used in the Makefile to create the door-locker program exploited in the previous laboratory. The 
+The aim of this part of the lab was to find the compilation and linker flags used in the Makefile to create the door-locker program exploited in the previous laboratory. 
+As mentioned in the analysis of the mitigations of the previous lab. The flags that we needed are the ones that disable the D-FORTIFY and the canaries so that we can execute the attack  
 
 <!-- You should skip a line before and after a bullet point. You can use whatever symbole you want, "-", "*" ... -->
 Bullet point list:
